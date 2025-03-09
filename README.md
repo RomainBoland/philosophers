@@ -22,7 +22,7 @@ In this implementation:
 Clone the repository and compile the program:
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:RomainBoland/philosophers.git
 cd philosophers
 make
 ```
