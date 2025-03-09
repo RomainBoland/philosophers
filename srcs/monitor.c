@@ -12,40 +12,42 @@
 
 #include "philo.h"
 
+static bool	philo_is_dead(t_table *table, int i, long long current_time)
+{
+	long long	time_since_last_meal;
+
+	time_since_last_meal = time_diff(table->philos[i].last_meal_time,
+			current_time);
+	if (time_since_last_meal > table->time_to_die)
+	{
+		table->simulation_running = false;
+		pthread_mutex_unlock(&table->check_mutex);
+		pthread_mutex_lock(&table->print_mutex);
+		printf("%lld %s%d%s died\n",
+			time_diff(table->start_time, current_time),
+			get_philo_color(table->philos[i].id),
+			table->philos[i].id,
+			RESET);
+		pthread_mutex_unlock(&table->print_mutex);
+		return (true);
+	}
+	return (false);
+}
+
 bool	check_death(t_table *table, int *i)
 {
 	long long	current_time;
-	long long	time_since_last_meal;
-	
-	// Ensure table and philosopher array exist
+
 	if (!table || !table->philos)
 		return (true);
-		
 	pthread_mutex_lock(&table->check_mutex);
 	current_time = get_time();
-	
-	// Check if index is valid
 	if (*i >= 0 && *i < table->num_philos)
 	{
-		time_since_last_meal = time_diff(table->philos[*i].last_meal_time, 
-									current_time);
-		
-		if (time_since_last_meal > table->time_to_die)
-		{
-			table->simulation_running = false;
-			pthread_mutex_unlock(&table->check_mutex);
-			
-			pthread_mutex_lock(&table->print_mutex);
-			printf("%lld %d died\n", 
-				time_diff(table->start_time, current_time), 
-				table->philos[*i].id);
-			pthread_mutex_unlock(&table->print_mutex);
-			
+		if (philo_is_dead(table, *i, current_time))
 			return (true);
-		}
 	}
 	pthread_mutex_unlock(&table->check_mutex);
-	
 	*i = (*i + 1) % table->num_philos;
 	return (false);
 }
@@ -57,7 +59,6 @@ bool	check_meals(t_table *table)
 
 	if (table->meals_required == -1)
 		return (false);
-	
 	i = 0;
 	philos_finished = 0;
 	pthread_mutex_lock(&table->check_mutex);
@@ -87,8 +88,13 @@ void	*monitor_routine(void *arg)
 	usleep(1000);
 	while (table->simulation_running)
 	{
-		if (check_death(table, &i) || check_meals(table))
+		if (check_death(table, &i))
 			break ;
+		else if (check_meals(table))
+		{
+			printf("%sEveryone ate %d times%s\n", GREEN,
+				table->meals_required, WHITE);
+		}
 		usleep(1000);
 	}
 	return (NULL);

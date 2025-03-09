@@ -41,15 +41,35 @@ void	accurate_sleep(long long time_in_ms)
 	}
 }
 
+char	*get_philo_color(int id)
+{
+	if (id % 7 == 1)
+		return (RED);
+	else if (id % 7 == 2)
+		return (GREEN);
+	else if (id % 7 == 3)
+		return (YELLOW);
+	else if (id % 7 == 4)
+		return (BLUE);
+	else if (id % 7 == 5)
+		return (PURPLE);
+	else if (id % 7 == 6)
+		return (CYAN);
+	else
+		return (WHITE);
+}
+
 void	print_status(t_table *table, int id, char *status)
 {
 	long long	timestamp;
+	char		*color;
 
 	pthread_mutex_lock(&table->print_mutex);
 	if (table->simulation_running)
 	{
 		timestamp = time_diff(table->start_time, get_time());
-		printf("%lld %d %s\n", timestamp, id, status);
+		color = get_philo_color(id);
+		printf("%lld %s%d%s %s\n", timestamp, color, id, RESET, status);
 	}
 	pthread_mutex_unlock(&table->print_mutex);
 }

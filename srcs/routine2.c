@@ -39,7 +39,6 @@ static void	release_forks(t_philo *philo)
 void	eat(t_philo *philo)
 {
 	take_forks(philo);
-
 	pthread_mutex_lock(&philo->table->check_mutex);
 	philo->last_meal_time = get_time();
 	philo->meals_eaten++;

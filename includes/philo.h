@@ -20,6 +20,18 @@
 # include <sys/time.h>
 # include <stdbool.h>
 # include <limits.h>
+# include <string.h>
+
+/* Colors definition*/
+
+# define RED "\033[0;31m"
+# define GREEN "\033[0;32m"
+# define YELLOW "\033[0;33m"
+# define BLUE "\033[0;34m"
+# define PURPLE "\033[0;35m"
+# define CYAN "\033[0;36m"
+# define WHITE "\033[0;37m"
+# define RESET "\033[0m"
 
 /* Struct Definition*/
 
@@ -63,6 +75,7 @@ long long	get_time(void);
 long long	time_diff(long long past, long long present);
 void		accurate_sleep(long long time_in_ms);
 void		print_status(t_table *table, int id, char *status);
+char		*get_philo_color(int id);
 
 // utils2.c
 int			ft_atoi(const char *str);
