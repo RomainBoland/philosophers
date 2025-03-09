@@ -69,7 +69,7 @@ void	print_status(t_table *table, int id, char *status)
 	{
 		timestamp = time_diff(table->start_time, get_time());
 		color = get_philo_color(id);
-		printf("%lld %s%d%s %s\n", timestamp, color, id, RESET, status);
+		printf("%lldms %s%d%s %s\n", timestamp, color, id, RESET, status);
 	}
 	pthread_mutex_unlock(&table->print_mutex);
 }
