@@ -38,7 +38,7 @@ bool	init_table(t_table *table, int argc, char **argv)
 	table->forks = NULL;
 	if (!parse_args(table, argc, argv))
 	{
-		printf("Failed to parse arguments\n");
+		printf("Arguments must be positive value\n");
 		return (false);
 	}
 	table->simulation_running = true;
