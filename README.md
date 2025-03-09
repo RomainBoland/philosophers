@@ -24,6 +24,7 @@ Clone the repository and compile the program:
 ```bash
 git clone git@github.com:RomainBoland/philosophers.git
 cd philosophers
+cd philo
 make
 ```
 
