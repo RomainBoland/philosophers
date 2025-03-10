@@ -92,7 +92,7 @@ void	*monitor_routine(void *arg)
 			break ;
 		else if (check_meals(table))
 		{
-			printf("%sEveryone ate %d times%s\n", GREEN,
+			printf("%sEveryone has eaten %d times%s\n", GREEN,
 				table->meals_required, WHITE);
 		}
 		usleep(1000);
