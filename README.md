@@ -111,7 +111,3 @@ You can test the program with different parameters to observe various scenarios:
 - **Mutexes**: Used to protect forks and shared state
 - **Timing**: Uses `gettimeofday()` for microsecond precision
 - **Monitoring**: A separate thread monitors for death conditions
-
-## 👥 Authors
-
-- [Your Name]
