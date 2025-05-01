@@ -12,6 +12,17 @@
 
 #include "philo.h"
 
+/* Safe access to simulation_running flag */
+bool	is_running(t_table *table)
+{
+	bool	status;
+
+	pthread_mutex_lock(&table->print_mutex);
+	status = table->simulation_running;
+	pthread_mutex_unlock(&table->print_mutex);
+	return (status);
+}
+
 static bool	philo_is_dead(t_table *table, int i, long long current_time)
 {
 	long long	time_since_last_meal;
@@ -20,15 +31,15 @@ static bool	philo_is_dead(t_table *table, int i, long long current_time)
 			current_time);
 	if (time_since_last_meal > table->time_to_die)
 	{
-		table->simulation_running = false;
-		pthread_mutex_unlock(&table->check_mutex);
 		pthread_mutex_lock(&table->print_mutex);
+		table->simulation_running = false;
 		printf("%lld %s%d%s died\n",
 			time_diff(table->start_time, current_time),
 			get_philo_color(table->philos[i].id),
 			table->philos[i].id,
 			RESET);
 		pthread_mutex_unlock(&table->print_mutex);
+		pthread_mutex_unlock(&table->check_mutex);
 		return (true);
 	}
 	return (false);
@@ -52,6 +63,15 @@ bool	check_death(t_table *table, int *i)
 	return (false);
 }
 
+static void	stop_sim(t_table *table)
+{
+	pthread_mutex_lock(&table->print_mutex);
+	table->simulation_running = false;
+	pthread_mutex_unlock(&table->print_mutex);
+	printf("%sEveryone has eaten %d times%s\n", GREEN,
+		table->meals_required, WHITE);
+}
+
 bool	check_meals(t_table *table)
 {
 	int	i;
@@ -70,8 +90,8 @@ bool	check_meals(t_table *table)
 	}
 	if (philos_finished == table->num_philos)
 	{
-		table->simulation_running = false;
 		pthread_mutex_unlock(&table->check_mutex);
+		stop_sim(table);
 		return (true);
 	}
 	pthread_mutex_unlock(&table->check_mutex);
@@ -86,15 +106,12 @@ void	*monitor_routine(void *arg)
 	table = (t_table *)arg;
 	i = 0;
 	usleep(1000);
-	while (table->simulation_running)
+	while (is_running(table))
 	{
 		if (check_death(table, &i))
 			break ;
-		else if (check_meals(table))
-		{
-			printf("%sEveryone has eaten %d times%s\n", GREEN,
-				table->meals_required, WHITE);
-		}
+		if (check_meals(table))
+			break ;
 		usleep(1000);
 	}
 	return (NULL);

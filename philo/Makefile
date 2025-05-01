@@ -1,7 +1,7 @@
 NAME = philo
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pthread
+CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
 INCLUDES = -I includes/
 MINECRAFT_GREEN = \033[38;5;70m
 RESET = \033[0m

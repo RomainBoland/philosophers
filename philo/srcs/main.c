@@ -98,6 +98,15 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	wait_for_philosophers(&table);
+	
+	// Make sure simulation is explicitly marked as not running before cleanup
+	pthread_mutex_lock(&table.print_mutex);
+	table.simulation_running = false;
+	pthread_mutex_unlock(&table.print_mutex);
+	
+	// Add a small delay before cleanup to ensure monitor thread has finished
+	usleep(5000);
+	
 	cleanup(&table);
 	return (0);
 }

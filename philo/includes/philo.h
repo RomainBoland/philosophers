@@ -92,6 +92,7 @@ void		eat(t_philo *philo);
 bool		check_death(t_table *table, int *i);
 bool		check_meals(t_table *table);
 void		*monitor_routine(void *arg);
+bool		is_running(t_table *table);
 
 // cleanup.c
 void		cleanup(t_table *table);

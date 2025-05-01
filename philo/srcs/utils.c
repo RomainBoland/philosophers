@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "philo.h"
 
 long long	get_time(void)
@@ -63,9 +64,11 @@ void	print_status(t_table *table, int id, char *status)
 {
 	long long	timestamp;
 	char		*color;
+	bool		running;
 
 	pthread_mutex_lock(&table->print_mutex);
-	if (table->simulation_running)
+	running = table->simulation_running;
+	if (running)
 	{
 		timestamp = time_diff(table->start_time, get_time());
 		color = get_philo_color(id);

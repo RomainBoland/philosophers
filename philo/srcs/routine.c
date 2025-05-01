@@ -12,6 +12,9 @@
 
 #include "philo.h"
 
+/* This function should be declared in philo.h */
+bool	is_running(t_table *table);
+
 void	sleep_philo(t_philo *philo)
 {
 	print_status(philo->table, philo->id, "is_sleeping");
@@ -27,7 +30,7 @@ static void	single_philo_routine(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->table->forks[philo->left_fork]);
 	print_status(philo->table, philo->id, "has taken a fork");
-	while (philo->table->simulation_running)
+	while (is_running(philo->table))
 		usleep(100);
 	pthread_mutex_unlock(&philo->table->forks[philo->left_fork]);
 }
@@ -44,7 +47,7 @@ void	*philo_routine(void *arg)
 	}
 	if (philo->id % 2 == 0)
 		usleep(1000);
-	while (philo->table->simulation_running)
+	while (is_running(philo->table))
 	{
 		eat(philo);
 		sleep_philo(philo);
